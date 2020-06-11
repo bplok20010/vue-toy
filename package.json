@@ -1,6 +1,6 @@
 {
 	"name": "vue-observable-demo",
-	"version": "1.0.0",
+	"version": "0.2.0",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
@@ -35,6 +35,8 @@
 	],
 	"dependencies": {
 		"lodash": "^4.17.15",
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1",
 		"shallowequal": "^1.1.0"
 	}
 }
