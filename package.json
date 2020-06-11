@@ -1,0 +1,40 @@
+{
+	"name": "vue-observable-demo",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "tsc -w",
+		"cjs": "transform-es src -d cjs -c -t cjs -w",
+		"tsc": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bplok20010/vue-observable-demo.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/bplok20010/vue-observable-demo/issues"
+	},
+	"homepage": "https://github.com/bplok20010/vue-observable-demo#readme",
+	"devDependencies": {
+		"@types/lodash": "^4.14.155",
+		"transform-es": "^5.0.4"
+	},
+	"browserslist": [
+		">=0.25%",
+		"not dead",
+		"not op_mini all",
+		"not Android 4.4.3-4.4.4",
+		"not ios_saf < 10",
+		"not Chrome < 50",
+		"firefox ESR"
+	],
+	"dependencies": {
+		"lodash": "^4.17.15",
+		"shallowequal": "^1.1.0"
+	}
+}
