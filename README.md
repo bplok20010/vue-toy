@@ -1,1 +1,1 @@
-# vue-observable
+# vue-toy

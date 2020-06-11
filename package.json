@@ -1,8 +1,17 @@
 {
-	"name": "vue-observable-demo",
+	"name": "vue-toy",
 	"version": "0.2.0",
-	"description": "",
-	"main": "index.js",
+	"description": "玩具vue",
+	"main": "cjs/index.js",
+	"module": "esm/index.js",
+	"types": "lib/index.d.ts",
+	"files": [
+		"cjs",
+		"esm",
+		"lib",
+		"style",
+		"*.md"
+	],
 	"scripts": {
 		"start": "tsc -w",
 		"cjs": "transform-es src -d cjs -c -t cjs -w",
@@ -13,8 +22,11 @@
 		"type": "git",
 		"url": "git+https://github.com/bplok20010/vue-observable-demo.git"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"vue",
+		"vue-toy"
+	],
+	"author": "nobo.zhou@foxmail.com",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/bplok20010/vue-observable-demo/issues"
