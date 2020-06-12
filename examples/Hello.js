@@ -5,12 +5,12 @@ export default Vue.component({
 	data: () => ({
 		counter: 0,
 	}),
-	computed: {
-		name: () => {
-			console.log(this);
-			return this.counter + "x";
-		},
-	},
+	// computed: {
+	// 	name: () => {
+	// 		console.log(this);
+	// 		return this.counter + "x";
+	// 	},
+	// },
 	render() {
 		return (
 			<p>
