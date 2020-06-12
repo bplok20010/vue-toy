@@ -3,26 +3,40 @@ import Vue from "../src/Vue";
 export default Vue.component({
 	props: ["msg"],
 	data: () => ({
-		counter: 0,
+		counter2: 0,
+		clickCounter: 1,
 	}),
-	// computed: {
-	// 	name: () => {
-	// 		console.log(this);
-	// 		return this.counter + "x";
-	// 	},
-	// },
+	computed: {
+		name() {
+			return this.counter2 + "x";
+		},
+	},
+	watch: {
+		clickCounter: function () {
+			console.log("watch clickCounter changed");
+		},
+	},
+	methods: {
+		handleClick() {
+			console.log(this, "a");
+			this.clickCounter++;
+		},
+	},
 	render() {
 		return (
-			<p>
-				hello {this.msg} --- {this.counter}
-				<div>{this.name}</div>
-			</p>
+			<>
+				<button onClick={this.handleClick}>click： {this.clickCounter}</button>
+				<p>
+					hello {this.msg} --- {this.counter2}
+					<div>{this.name}</div>
+				</p>
+			</>
 		);
 	},
 	updated() {
-		console.log("hello update");
+		//console.log("hello update");
 	},
 	mounted() {
-		setInterval(() => this.counter++, 100);
+		setInterval(() => this.counter2++, 100);
 	},
 });

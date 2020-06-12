@@ -18,7 +18,6 @@ const vue = new Vue({
 		};
 	},
 	mounted() {
-		console.log("mountedV 1");
 		setInterval(() => this.counter++, 1000);
 	},
 });

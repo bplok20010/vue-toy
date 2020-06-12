@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import shallowequal from "shallowequal";
 import pick from "lodash/pick";
 import debounce from "lodash/debounce";
@@ -6,16 +7,19 @@ import Observable from "./Observable";
 import Watch from "./Watch";
 
 export interface ComponentOptions {
-	// el?: HTMLElement;
+	el?: HTMLElement;
+	propsData?: Record<string, any>;
 	props?: string[];
 	data?: () => Record<string, any>;
 	methods?: Record<string, (e: Event) => void>;
 	computed?: Record<string, () => any>;
 	watch?: Record<string, (newValue: any, oldValue: any) => any>;
 	render: (h: typeof React.createElement) => React.ReactNode;
+	renderError?: (h: typeof React.createElement, error: Error) => React.ReactNode;
 	mounted?: () => void;
 	updated?: () => void;
 	destroyed?: () => void;
+	errorCaptured?: (e: Error, vm: React.ReactInstance) => void;
 }
 
 export default (options: ComponentOptions) => {
@@ -23,23 +27,35 @@ export default (options: ComponentOptions) => {
 		$children: React.ReactNode;
 		$data: Record<string, any>;
 		[x: string]: any;
+		$watcher: Watch;
 
 		constructor(props: {}) {
 			super(props);
 
-			this.updateProps();
+			const propsData = Object.create(null);
+			(options.props || []).forEach((key) => {
+				propsData[key] = undefined;
+			});
 
 			const data = options.data ? options.data.call(this) : {};
 
 			let computed: any = null;
 			if (options.computed) {
-				computed = {};
+				computed = Object.create(null);
 				Object.keys(options.computed).forEach((name) => {
 					computed[name] = options.computed![name];
 				});
 			}
 
-			this.$data = Observable({ ...options.methods, ...data }, computed);
+			//绑定methods的this
+			const methods = Object.create(null);
+			if (options.methods) {
+				Object.keys(options.methods).forEach((key) => {
+					methods[key] = options.methods![key].bind(this);
+				});
+			}
+
+			this.$data = Observable({ ...propsData, ...methods, ...data }, computed);
 
 			if (options.watch) {
 				Object.keys(options.watch).forEach((key) => {
@@ -48,7 +64,8 @@ export default (options: ComponentOptions) => {
 			}
 
 			Object.keys({
-				...options.methods,
+				...propsData,
+				...methods,
 				...options.computed,
 				...data,
 			}).forEach((key) => {
@@ -62,7 +79,9 @@ export default (options: ComponentOptions) => {
 				});
 			});
 
-			new Watch(
+			this.updateProps();
+
+			this.$watcher = new Watch(
 				this.$data,
 				() => {
 					// strict mode
@@ -78,6 +97,10 @@ export default (options: ComponentOptions) => {
 
 			// Init
 			this.$children = options.render.call(this, React.createElement);
+
+			// if (options.el) {
+			// 	this.$mount(options.el);
+			// }
 		}
 
 		updateProps(props = this.props) {
@@ -112,6 +135,7 @@ export default (options: ComponentOptions) => {
 		}
 
 		componentWillUnmount() {
+			this.$watcher.clearDeps();
 			options.destroyed?.call(this);
 		}
 
@@ -119,8 +143,54 @@ export default (options: ComponentOptions) => {
 			options.updated?.call(this);
 		}
 
+		componentDidCatch(error: Error) {
+			options.errorCaptured?.(error, this);
+			if (options.renderError) {
+				this.$children = options.renderError.call(this, React.createElement, error);
+			}
+		}
+
 		render() {
 			return this.$children;
 		}
+
+		$mount(el: HTMLElement) {
+			ReactDOM.render(React.createElement(VueComponent, options.propsData || {}), el);
+		}
+
+		$forceUpdate() {
+			this.forceUpdate();
+		}
+
+		$nextTick(cb?: () => void) {
+			this.forceUpdate(cb);
+		}
+
+		$destroy() {
+			this.$children = null;
+			this.forceUpdate();
+			//TODO: componentWillUnmount()
+		}
 	};
+
+	// return class Vue {
+	// 	constructor() {}
+	// 	$mount(el: HTMLElement) {
+	// 		ReactDOM.render(React.createElement(VueComponent, options.propsData || {}), el);
+	// 	}
+
+	// 	$forceUpdate() {
+	// 		this.forceUpdate();
+	// 	}
+
+	// 	$nextTick(cb?: () => void) {
+	// 		this.forceUpdate(cb);
+	// 	}
+
+	// 	$destroy() {
+	// 		this.$children = null;
+	// 		this.forceUpdate();
+	// 		//TODO: componentWillUnmount()
+	// 	}
+	// };
 };

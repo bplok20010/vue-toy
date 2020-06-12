@@ -19,7 +19,9 @@ export default class Watch {
 				? function () {
 						return objGet(data, exp);
 				  }
-				: () => exp.call(data);
+				: () => {
+						return exp.call(data);
+				  };
 
 		const lastWatchDep = CurrentWatchDep.current;
 		CurrentWatchDep.current = this;
@@ -41,6 +43,7 @@ export default class Watch {
 	}
 
 	check() {
+		// 清空所有依赖，重新计算
 		this.clearDeps();
 		const lastWatchDep = CurrentWatchDep.current;
 		CurrentWatchDep.current = this;

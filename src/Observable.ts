@@ -39,10 +39,12 @@ export default function Observable(data: Data, computed: Computed | null, isRoot
 			if (key === "__ob__") return true;
 
 			if (isRoot && key === "$watch") {
-				return (exp: any, watchFn: any): (() => void) => {
+				return (
+					exp: string | (() => any),
+					watchFn: (n: any, o: any) => void
+				): (() => void) => {
 					const watcher = new Watch(proxy, exp, watchFn);
 					return () => {
-						// clear all??
 						watcher.clearDeps();
 					};
 				};
