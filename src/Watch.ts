@@ -11,15 +11,15 @@ export default class Watch {
 	exp: () => any;
 	watchFn: (newValue: any, oldValue: any) => void;
 	deps: any[] = [];
-	constructor(data: any, path: any, fn: (newValue: any, oldValue: any) => void) {
+	constructor(data: any, exp: any, fn: (newValue: any, oldValue: any) => void) {
 		this.watchFn = fn;
 
 		this.exp =
-			typeof path === "string"
+			typeof exp === "string"
 				? function () {
-						return objGet(data, path);
+						return objGet(data, exp);
 				  }
-				: () => path.call(data);
+				: () => exp.call(data);
 
 		const lastWatchDep = CurrentWatchDep.current;
 		CurrentWatchDep.current = this;

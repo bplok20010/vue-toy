@@ -11,7 +11,6 @@ const arrayMethods = ["push", "pop", "shift", "unshift", "splice", "sort", "reve
 export default function Observable(data: Data, computed: Computed | null, isRoot: boolean = true) {
 	const protoListener: Record<string, Notify> = {};
 	// 递归监控所有属性
-	//TODO:
 	if (Array.isArray(data)) {
 		data.forEach((value, i) => {
 			if (isObject(value) || Array.isArray(value)) {
@@ -37,16 +36,22 @@ export default function Observable(data: Data, computed: Computed | null, isRoot
 
 	const handler = {
 		get: (target: Data, key: string, proxy: ProxyConstructor) => {
+			if (key === "__ob__") return true;
+
 			if (isRoot && key === "$watch") {
-				return (path: any, watchFn: any): (() => void) => {
-					const watcher = new Watch(proxy, path, watchFn);
+				return (exp: any, watchFn: any): (() => void) => {
+					const watcher = new Watch(proxy, exp, watchFn);
 					return () => {
+						// clear all??
 						watcher.clearDeps();
 					};
 				};
 			}
 
 			let value = target[key];
+			if ((isObject(value) || Array.isArray(value)) && !value["__ob__"]) {
+				value = target[key] = Observable(value, null, false);
+			}
 
 			const isComputed = computed && !(key in target) && key in computed && computed[key];
 
@@ -56,10 +61,17 @@ export default function Observable(data: Data, computed: Computed | null, isRoot
 				watcher.addDep(protoListener[key]);
 			}
 
+			if (Array.isArray(target) && arrayMethods.indexOf(key) !== -1) {
+				return (...args: any[]) => {
+					const ret = target[key].apply(target, args);
+					protoListener[key] && protoListener[key].pub();
+					return ret;
+				};
+			}
+
 			return isComputed ? computed![key].call(proxy) : value;
 		},
 		set: function (target: Data, key: string, value: any) {
-			//TODO: 新增元素重新监控
 			const oldValue = target[key];
 			target[key] = value;
 			if (!shallowequal(oldValue, value) && protoListener[key]) {
