@@ -106,7 +106,7 @@ const Hello = Vue.component({
 export default Hello;
 ```
 
-## 实现基本原理
+## 基本原理
 
 ```js
 // 创建观察对象
