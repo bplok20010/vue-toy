@@ -107,6 +107,7 @@ export default (options: ComponentOptions) => {
 				}
 				this[key] = props[key];
 			});
+			this.children = props.children;
 		}
 
 		$watch(exp: string | (() => any), watchFn: (newValue: any, oldValue: any) => void) {
