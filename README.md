@@ -4,7 +4,7 @@
 npm install --save vue-toy
 ```
 
-2-300行代码模拟vue实现。
+300行左右代码模拟vue实现。
 
 [![Edit vibrant-williamson-66cdi](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/vibrant-williamson-66cdi?fontsize=14&hidenavigation=1&theme=dark)
 
@@ -12,7 +12,7 @@ npm install --save vue-toy
 ## Vue(options)
 ```ts
 interface Options {
-    el: HTMLElement;
+    el: HTMLElement | string;
 	propsData?: Record<string, any>;
 	props?: string[];
 	name?: string;
