@@ -8,7 +8,11 @@ type Computed = Record<string, (this: Data) => void>;
 
 const arrayMethods = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "concat"];
 
-export default function Observable(data: Data, computed: Computed | null, isRoot: boolean = true) {
+export default function Observable(
+	data: Data,
+	computed: Computed | null = null,
+	isRoot: boolean = true
+) {
 	const protoListener: Record<string, Notify> = {};
 	// 递归监控所有属性
 	if (Array.isArray(data)) {
@@ -51,15 +55,27 @@ export default function Observable(data: Data, computed: Computed | null, isRoot
 			}
 
 			let value = target[key];
-			if ((isObject(value) || Array.isArray(value)) && !value["__ob__"]) {
+			if (
+				target.hasOwnProperty(key) &&
+				(isObject(value) || Array.isArray(value)) &&
+				!value["__ob__"]
+			) {
 				value = target[key] = Observable(value, null, false);
 			}
 
-			const isComputed = computed && !(key in target) && key in computed && computed[key];
+			const isComputed =
+				computed &&
+				!(key in target) &&
+				(target.hasOwnProperty(key) || computed[key]) &&
+				key in computed &&
+				computed[key];
 
 			if (CurrentWatchDep.current && !isComputed) {
 				const watcher = CurrentWatchDep.current;
-				protoListener[key] = protoListener[key] || new Notify();
+				protoListener[key] =
+					protoListener[key] && protoListener[key] instanceof Notify
+						? protoListener[key]
+						: new Notify();
 				watcher.addDep(protoListener[key]);
 			}
 

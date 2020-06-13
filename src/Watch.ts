@@ -8,11 +8,14 @@ export let CurrentWatchDep: { current: null | Watch } = {
 
 export default class Watch {
 	last: any;
+	_exp: any;
 	exp: () => any;
 	watchFn: (newValue: any, oldValue: any) => void;
 	deps: any[] = [];
 	constructor(data: any, exp: any, fn: (newValue: any, oldValue: any) => void) {
 		this.watchFn = fn;
+
+		this._exp = exp;
 
 		this.exp =
 			typeof exp === "string"
@@ -35,6 +38,7 @@ export default class Watch {
 	}
 
 	addDep(notify: Notify) {
+		if (!notify.sub) console.log(notify, typeof notify, this._exp.toString());
 		this.deps.push(
 			notify.sub(() => {
 				this.check();

@@ -7,9 +7,8 @@ import Observable from "./Observable";
 import Watch from "./Watch";
 
 export interface ComponentOptions {
-	el?: HTMLElement;
-	propsData?: Record<string, any>;
 	props?: string[];
+	name?: string;
 	data?: () => Record<string, any>;
 	methods?: Record<string, (e: Event) => void>;
 	computed?: Record<string, () => any>;
@@ -23,7 +22,9 @@ export interface ComponentOptions {
 }
 
 export default (options: ComponentOptions) => {
-	return class VueComponent extends React.Component {
+	return class extends React.Component<{ $el?: HTMLElement }> {
+		static displayName = options.name;
+
 		$children: React.ReactNode;
 		$data: Record<string, any>;
 		[x: string]: any;
@@ -37,7 +38,7 @@ export default (options: ComponentOptions) => {
 				propsData[key] = undefined;
 			});
 
-			const data = options.data ? options.data.call(this) : {};
+			const data = options.data ? options.data.call(this.props) : {};
 
 			let computed: any = null;
 			if (options.computed) {
@@ -66,7 +67,7 @@ export default (options: ComponentOptions) => {
 			Object.keys({
 				...propsData,
 				...methods,
-				...options.computed,
+				...computed,
 				...data,
 			}).forEach((key) => {
 				Object.defineProperty(this, key, {
@@ -97,10 +98,6 @@ export default (options: ComponentOptions) => {
 
 			// Init
 			this.$children = options.render.call(this, React.createElement);
-
-			// if (options.el) {
-			// 	this.$mount(options.el);
-			// }
 		}
 
 		updateProps(props = this.props) {
@@ -154,10 +151,6 @@ export default (options: ComponentOptions) => {
 			return this.$children;
 		}
 
-		$mount(el: HTMLElement) {
-			ReactDOM.render(React.createElement(VueComponent, options.propsData || {}), el);
-		}
-
 		$forceUpdate() {
 			this.forceUpdate();
 		}
@@ -167,30 +160,10 @@ export default (options: ComponentOptions) => {
 		}
 
 		$destroy() {
-			this.$children = null;
-			this.forceUpdate();
-			//TODO: componentWillUnmount()
+			if (this.props.$el) {
+				ReactDOM.unmountComponentAtNode(this.props.$el);
+				this.$children = null;
+			}
 		}
 	};
-
-	// return class Vue {
-	// 	constructor() {}
-	// 	$mount(el: HTMLElement) {
-	// 		ReactDOM.render(React.createElement(VueComponent, options.propsData || {}), el);
-	// 	}
-
-	// 	$forceUpdate() {
-	// 		this.forceUpdate();
-	// 	}
-
-	// 	$nextTick(cb?: () => void) {
-	// 		this.forceUpdate(cb);
-	// 	}
-
-	// 	$destroy() {
-	// 		this.$children = null;
-	// 		this.forceUpdate();
-	// 		//TODO: componentWillUnmount()
-	// 	}
-	// };
 };
