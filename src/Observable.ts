@@ -13,7 +13,7 @@ export default function Observable(
 	computed: Computed | null = null,
 	isRoot: boolean = true
 ) {
-	const protoListener: Record<string, Notify> = {};
+	const protoListener: Record<string, Notify> = Object.create(null);
 	// 递归监控所有属性
 	if (Array.isArray(data)) {
 		data.forEach((value, i) => {
