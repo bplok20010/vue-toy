@@ -6,7 +6,6 @@ export default class Notify {
 		return () => {
 			const idx = this.listeners.indexOf(fn);
 			if (idx === -1) return;
-
 			this.listeners.splice(idx, 1);
 		};
 	}
