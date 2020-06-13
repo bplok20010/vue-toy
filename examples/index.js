@@ -21,6 +21,8 @@ const vue = new Vue({
 					columns={this.gridColumns}
 					filterKey={this.searchQuery}
 				/>
+				<br />
+				<a href="https://github.com/bplok20010/vue-toy">Github</a>
 			</>
 		);
 	},
