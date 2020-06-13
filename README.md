@@ -110,7 +110,9 @@ export default Hello;
 
 ```js
 // 创建观察对象
-// 观察对象主要使用的是Object.defineProperty或Proxy来实现，也可使用类似angular.js的脏检测(不过需要额外的检测调用)，如果不在意写法也可以参考knockout或 setXXX getXXX的方式
+// 观察对象主要使用的是Object.defineProperty或Proxy来实现，
+// 也可使用类似angular.js的脏检测(不过需要额外的检测调用)，
+// 如果不在意写法也可以参考knockout或 setXXX getXXX的方式
 const data = observable({
     name: 'vue-toy',
 });
@@ -120,7 +122,9 @@ const render = function(){
     return <h1>{data.name}</h1>
 }
 
-// 计算render的依赖属性，依赖属性改变时，会重新计算computedFn，并执行监控函数watchFn，属性依赖计算使用栈及可以了。
+// 计算render的依赖属性，
+// 依赖属性改变时，会重新计算computedFn，并执行监控函数watchFn，
+// 属性依赖计算使用栈及可以了。
 // watch(computedFn, watchFn);
 watch(render, function(newVNode, oldVNode){
     update(newVNode, mountNode);
