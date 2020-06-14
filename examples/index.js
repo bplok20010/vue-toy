@@ -22,7 +22,7 @@ const vue = new Vue({
 					filterKey={this.searchQuery}
 				/>
 				<br />
-				<a href="https://github.com/bplok20010/vue-toy">Github</a>
+				<a href="https://github.com/bplok20010/vue-toy">View Github</a>
 			</>
 		);
 	},

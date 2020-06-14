@@ -8,6 +8,7 @@ npm install --save vue-toy
 
 [![Edit vibrant-williamson-66cdi](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/vibrant-williamson-66cdi?fontsize=14&hidenavigation=1&theme=dark)
 
+相关文章：[200行代码模拟vue实现](https://www.v2ex.com/t/681386)
 
 ## Vue(options)
 ```ts
@@ -140,4 +141,14 @@ data.name = 'hello vue toy';
 > 视图渲染部分(既render)使用的是vdom技术，vue2+使用`Snabbdom`库，`vue-toy`使用的是`react`来进行渲染，所以在render函数里你可以直接使用React的JSX语法,不过别忘记`import React from 'react'`，当然也可以使用`preact` `inferno` 等 vdom库。
 
 > 由于vue的template的最终也是解析并生成render函数，模版的解析可用`htmleParser`库来生成`AST`，剩下就是解析指令并生产代码，由于工作量大，这里就不具体实现，直接使用jsx。
+
+## Dev
+
+```
+// 运行demo
+npm run demo
+
+//构建
+npm run build
+```
 

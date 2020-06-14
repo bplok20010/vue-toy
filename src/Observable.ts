@@ -8,6 +8,11 @@ type Computed = Record<string, (this: Data) => void>;
 
 const arrayMethods = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "concat"];
 
+function hasOwnProperty(target: {}, key: string): boolean {
+	const hasOwn = Object.prototype.hasOwnProperty;
+	return hasOwn.call(target, key);
+}
+
 export default function Observable(
 	data: Data,
 	computed: Computed | null = null,
@@ -40,7 +45,7 @@ export default function Observable(
 
 	const handler = {
 		get: (target: Data, key: string, proxy: ProxyConstructor) => {
-			if (key === "__ob__") return true;
+			if (key === "__is_ob__") return true;
 
 			if (isRoot && key === "$watch") {
 				return (
@@ -56,18 +61,17 @@ export default function Observable(
 
 			let value = target[key];
 			if (
-				target.hasOwnProperty(key) &&
+				hasOwnProperty(target, key) &&
 				(isObject(value) || Array.isArray(value)) &&
-				!value["__ob__"]
+				!value["__is_ob__"]
 			) {
 				value = target[key] = Observable(value, null, false);
 			}
 
 			const isComputed =
 				computed &&
-				!(key in target) &&
-				(target.hasOwnProperty(key) || computed[key]) &&
-				key in computed &&
+				!hasOwnProperty(target, key) &&
+				hasOwnProperty(computed, key) &&
 				computed[key];
 
 			if (CurrentWatchDep.current && !isComputed) {
