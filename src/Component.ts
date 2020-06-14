@@ -33,6 +33,16 @@ export default (options: ComponentOptions) => {
 		constructor(props: {}) {
 			super(props);
 
+			if (options.errorCaptured || options.renderError) {
+				this.componentDidCatch = (error: Error) => {
+					options.errorCaptured?.(error, this);
+					if (options.renderError) {
+						this.$children = options.renderError.call(this, React.createElement, error);
+						this.forceUpdate();
+					}
+				};
+			}
+
 			const propsData = Object.create(null);
 			(options.props || []).forEach((key) => {
 				propsData[key] = undefined;
@@ -139,13 +149,6 @@ export default (options: ComponentOptions) => {
 
 		componentDidUpdate() {
 			options.updated?.call(this);
-		}
-
-		componentDidCatch(error: Error) {
-			options.errorCaptured?.(error, this);
-			if (options.renderError) {
-				this.$children = options.renderError.call(this, React.createElement, error);
-			}
 		}
 
 		render() {
