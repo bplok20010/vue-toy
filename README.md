@@ -8,7 +8,7 @@ npm install --save vue-toy
 
 [![Edit vibrant-williamson-66cdi](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/vibrant-williamson-66cdi?fontsize=14&hidenavigation=1&theme=dark)
 
-相关文章：[200行代码模拟vue实现](https://www.v2ex.com/t/681386)
+相关文章：[200行代码模拟vue实现](https://my.oschina.net/nobo/blog/4310649)
 
 ## Vue(options)
 ```ts
